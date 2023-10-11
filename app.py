@@ -16,7 +16,7 @@ transactions: [Transaction] = []
 def hello_world():
     return "<p>Hello, World!</p>"
 
-@app.route("/transaction/save", methods=["POST"])
+@app.route("/transaction/create", methods=["POST"])
 def transaction_save():
     data = request.get_json()
     p1_id = data["p1_id"]
