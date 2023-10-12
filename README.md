@@ -13,13 +13,12 @@
 `pip install flask`
 - Export the environment variable:  
 ```
-cd controllers  
-export FLASK_APP=app.controller
+export FLASK_APP=app.py
 ```
 - Launch the application:  
 `flask run`
 
-## Exercises 3
+## Exercise 3
 ### A1: Save a transaction
 To create a transaction you have to send a `POST` request to the route `localhost:5000/transaction/create`.
 #### Request Parameters

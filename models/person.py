@@ -9,8 +9,9 @@ class Person:
         self.bank_balance = bank_balance
 
     def __str__(self):
-        return f"({self.id}) {self.first_name} {self.last_name} {self.bank_balance}"
+        return f"(id: {self.id}) {self.first_name} {self.last_name} {self.bank_balance}€"
     
     def pay(self, person: 'Person', amount: float):
-        self.bank_balance -= amount
-        person.bank_balance += amount
+        if amount > 0:
+            self.bank_balance -= amount
+            person.bank_balance += amount
