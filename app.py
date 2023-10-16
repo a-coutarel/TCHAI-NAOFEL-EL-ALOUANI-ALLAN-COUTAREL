@@ -2,15 +2,22 @@ from flask import Flask, request, jsonify, abort, Response
 from models.person import Person
 from models.transaction import Transaction
 from flask_cors import CORS
+from services.storage_service import StorageService
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True, origins=['*'])
 
-persons: [Person] = [
-    Person(0, "25/10/2001", "Allan", "COUTAREL", 100.0),
-    Person(1, "29/06/2001", "Naofel", "EL ALOUANI", 100.0)
-]
+storage_service = StorageService()
+persons: [Person] = []
 transactions: [Transaction] = []
+tuple_persons: [tuple] = storage_service.get_persons()
+for tuple_person in tuple_persons:
+    person = Person.from_tuple(storage_service, tuple_person)
+    persons.append(person)
+if len(persons) == 0:
+    persons.append(Person(storage_service, 0, "John", "Doe", "1990-01-01"))
+    persons.append(Person(storage_service, 1, "Jane", "Doe", "1990-01-01"))
+
 
 @app.route('/healthz')
 def healthz():
@@ -29,13 +36,13 @@ def transaction_save():
     if p1_id is None or p2_id is None or amount is None:
         abort(400, "Invalid request: Person not found")
     
-    p1: Person = find_person_by_id(p1_id)
-    p2: Person = find_person_by_id(p2_id)
+    p1: Person = Person.from_tuple(storage_service, storage_service.get_person(p1_id))
+    p2: Person = Person.from_tuple(storage_service, storage_service.get_person(p2_id))
 
     if p1 is None or p2 is None:
         abort(400, "Invalid request: Person not found")
     
-    transaction = Transaction(len(transactions) ,p1, p2, amount)
+    transaction = Transaction(storage_service, len(transactions) ,p1, p2, amount)
     transactions.append(transaction)
     return Response(status=201)
 
@@ -56,7 +63,7 @@ def person_transactions():
     if person_id is None:
         abort(400, "Invalid request: Person not found")
     
-    person: Person = find_person_by_id(int(person_id))
+    person: Person =  Person.from_tuple(storage_service, storage_service.get_person(int(person_id)))
     
     if person is None:
         abort(400, "Invalid request: Person not found")
@@ -72,22 +79,9 @@ def person_get_bank_balance():
     if person_id is None:
         abort(400, "Invalid request: Person not found")
         
-    person: Person = find_person_by_id(int(person_id))
+    person: Person = Person.from_tuple(storage_service, storage_service.get_person(int(person_id)))
     
     if person is None:
         abort(400, "Invalid request: Person not found")
         
     return jsonify({"bank_balance": str(person)})
-
-
-def find_person_by_id(id: int) -> Person:
-    for person in persons:
-        if person.id == id:
-            return person
-    return None
-
-def find_transaction_by_id(id: int) -> Transaction:
-    for transaction in transactions:
-        if transaction.id == id:
-            return transaction
-    return None
