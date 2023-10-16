@@ -23,7 +23,7 @@ export FLASK_APP=app.py
 `flask run`
 
 ## Exercise 3
-### <span style="color:blue"> A1: Save a transaction </span>
+### A1: Save a transaction
 To create a transaction, you have to send a `POST` request to the route `localhost:5000/transaction/create`.
 #### Request Parameters
 
@@ -51,7 +51,7 @@ The `POST` request must include a `JSON` object with the following elements:
 ```
 
 
-### <span style="color:blue"> A2: Show a list of all transactions in chronological order </span>
+### A2: Show a list of all transactions in chronological order
 To show a list of all transactions in chronological order, you have to send a `GET` request to the route `localhost:5000/transaction/view-in-chronological-order`.
 #### Request Parameters
 
@@ -63,7 +63,7 @@ No parameters required.
 | 200         | OK           | List of all transactions in chronological order.  |
 
 
-### <span style="color:blue"> A3: Show a list of transactions in chronological order linked to a given person </span>
+### A3: Show a list of transactions in chronological order linked to a given person
 To show a list of transactions in chronological order linked to a given person, you have to send a `GET` request to the route `localhost:5000/transaction/view-by-person`.
 #### Request Parameters
 
@@ -87,7 +87,7 @@ The `GET` request must include a `JSON` object with the following elements:
 ```
 
 
-### <span style="color:blue"> A4: Show the bank balance of the person given </span>
+### A4: Show the bank balance of the person given
 To show the bank balance of the person given, you have to send a `GET` request to the route `localhost:5000/person/bank-balance`.
 #### Request Parameters
 
