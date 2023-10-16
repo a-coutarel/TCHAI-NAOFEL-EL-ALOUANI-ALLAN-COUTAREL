@@ -12,9 +12,9 @@ persons: [Person] = [
 ]
 transactions: [Transaction] = []
 
-@app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+@app.route('/healthz')
+def healthz():
+    return Response(status=200)
 
 @app.route("/transaction/create", methods=["POST"])
 def transaction_save():
