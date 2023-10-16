@@ -1,11 +1,21 @@
 # Systèmes d’information avancés - Projet TP Tchaî
 
-![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54) ![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white) ![SQLite](https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white)
+<p align="center">
+    <img width="200" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Masala_Chai.JPG/220px-Masala_Chai.JPG">
+    <br>
+    <br>
+    <img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54">
+    <img src="https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white">
+    <img src="https://img.shields.io/badge/sqlite-%2307405e.svg?style=for-the-badge&logo=sqlite&logoColor=white">
+</p>
 
 ## Authors
-* __EL ALOUANI Naofel__
+* __EL ALOUANI Naofel__ 
+
     _📧: naofel_el-alouani@etu.u-bourgogne.fr_
-* __COUTAREL Allan__
+    
+* __COUTAREL Allan__ 
+
     _📧: allan_coutarel@etu.u-bourgogne.fr_
 
 ## Installation
@@ -109,3 +119,27 @@ The `GET` request must include a `JSON` object with the following elements:
     "person_id": 0
 }
 ```
+
+
+## Choice of technologies
+For this project, we have chosen to use Python as main programming language, the Flask web framework and the SQLite database management system.Our choices are motivated by several considerations:
+
+### 1. Simplicity and ease of learning
+Python is renowned for its clear syntax and its ease of learning, which makes it an ideal choice, especially in an educational context.Flask, as a minimalist web framework, shares this philosophy of simplicity, allowing rapid and efficient web development.
+
+### 2. Speed of development
+Flask offers rapid development of web applications while allowing in -depth personalization.Its modular approach allows us to add features as our project develops, which is particularly useful given our time constraint.
+
+### 3. Flexibility and total control
+Flask offers us the flexibility necessary to design an application that specifically meets our needs.Using Flask, we have total control over the structure of our application, which is essential to achieve our design objectives.
+
+### 4. Abundant documentation and active community
+Python, Flask and Sqlite benefit from large developer communities and many online documentation resources.This provides us with quick access to relevant information and solutions to any problems that we could encounter during development.
+
+### 5. SQLite for data management
+We have opted for SQLite as a database management system because of its simplicity and its transparent integration with Python.For our project, which involves relatively simple data storage, SQLite offers a light and effective solution without requiring complex configuration.
+
+### 6. Portability and compatibility
+Python being an interpreted language, our application will be portable and will be able to run on any platform compatible with Python.This guarantees coherent user experience, regardless of the execution environment.
+
+In summary, our choice of Python, Flask and SQLite is based on their simplicity, their speed of development, their flexibility, their exhaustive documentation and their compatibility.These technologies allow us to create a robust and functional web application that meets our requirements while offering us the possibility of demonstrating our programming and application design skills.
