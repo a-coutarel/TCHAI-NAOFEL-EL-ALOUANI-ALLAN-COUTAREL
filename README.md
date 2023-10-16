@@ -1,8 +1,7 @@
 # Systèmes d’information avancés - Projet TP Tchaî
 
 <p align="center">
-    <img width="200" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Masala_Chai.JPG/220px-Masala_Chai.JPG">
-    <br>
+    <img width="240" src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Masala_Chai.JPG/220px-Masala_Chai.JPG">
     <br>
     <img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54">
     <img src="https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white">
