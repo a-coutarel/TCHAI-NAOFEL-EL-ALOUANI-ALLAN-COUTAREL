@@ -41,7 +41,7 @@ def transaction_save():
 
 @app.route("/transaction/view-in-chronological-order", methods=["GET"])
 def transactions_view():
-    if transaction_service.is_transactions_empty:
+    if transaction_service.is_transactions_empty():
         return "No transactions found."
     
     transactions = transaction_service.get_transactions()
