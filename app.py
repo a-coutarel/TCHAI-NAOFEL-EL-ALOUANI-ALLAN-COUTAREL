@@ -1,28 +1,32 @@
+import datetime
 from flask import Flask, request, jsonify, abort, Response
 from models.person import Person
 from models.transaction import Transaction
 from flask_cors import CORS
-from services.storage_service import StorageService
+from services.person_service import PersonService
+from services.transaction_service import TransactionService
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True, origins=['*'])
 
-storage_service = StorageService()
+person_service = PersonService()
+transaction_service = TransactionService()
 
 def init():
-    if storage_service.is_persons_empty:
-        storage_service.add_person(Person(storage_service, 1, "John", "Doe", "1990-01-01"))
-        storage_service.add_person(Person(storage_service, 2, "Jane", "Doe", "1990-01-01"))
-    if storage_service.is_transactions_empty:
-        storage_service.add_transaction(
+    if person_service.is_persons_empty:
+        person_service.add_person(Person(1, "1990-01-01", "John", "Doe"))
+        person_service.add_person(Person(2, "1990-01-01", "Jane", "Doe"))
+    if transaction_service.is_transactions_empty:
+        transaction_service.add_transaction(
             Transaction(
-                storage_service, 
                 0, 
-                Person.from_tuple(storage_service, storage_service.get_person(1)), 
-                Person.from_tuple(storage_service, storage_service.get_person(2)), 
-                50
+                person_service.get_person(1),
+                person_service.get_person(2),
+                50.0
             )
         )
+
+init()
 
 @app.route('/healthz')
 def healthz():
@@ -41,21 +45,16 @@ def transaction_save():
     if p1_id is None or p2_id is None or amount is None:
         abort(400, "Invalid request: Person not found")
     
-    p1: Person = Person.from_tuple(storage_service, storage_service.get_person(p1_id))
-    p2: Person = Person.from_tuple(storage_service, storage_service.get_person(p2_id))
-
-    if p1 is None or p2 is None:
-        abort(400, "Invalid request: Person not found")
-    
-    transaction = Transaction(storage_service, len(transactions) ,p1, p2, amount)
-    transactions.append(transaction)
+    transaction_service.execute_transaction(p1_id, p2_id, amount, datetime.datetime.now())
+    transaction_service.add_transaction(p1_id, p2_id, amount, datetime.datetime.now())
     return Response(status=201)
 
 @app.route("/transaction/view-in-chronological-order", methods=["GET"])
 def transactions_view():
-    if len(transactions) == 0:
+    if transaction_service.is_transactions_empty:
         return "No transactions found."
     
+    transactions = transaction_service.get_transactions()
     transactions.sort(key=lambda x: x.time)
     transactions_str = [str(transaction) for transaction in transactions]
     return jsonify({"transactions": transactions_str})
