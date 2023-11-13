@@ -15,7 +15,6 @@ class TransactionService:
     def is_transactions_empty(self) -> bool:
         self.cursor.execute("SELECT COUNT(*) FROM transactions")
         count = self.cursor.fetchone()[0]
-        print(f"Count: {count}")  # Print the count for debugging
         return count == 0
 
     def create_tables(self):

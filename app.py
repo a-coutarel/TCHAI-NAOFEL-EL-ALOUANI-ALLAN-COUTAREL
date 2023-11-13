@@ -1,7 +1,5 @@
 import datetime
 from flask import Flask, request, jsonify, abort, Response
-from models.person import Person
-from models.transaction import Transaction
 from flask_cors import CORS
 from services.person_service import PersonService
 from services.transaction_service import TransactionService
@@ -13,10 +11,10 @@ person_service = PersonService()
 transaction_service = TransactionService()
 
 def init():
-    if person_service.is_persons_empty:
+    if person_service.is_persons_empty():
         person_service.add_person("John", "Doe", "1990-01-01", 1500)
         person_service.add_person("Jane", "Dupont", "1990-01-01", 780)
-    if transaction_service.is_transactions_empty:
+    if transaction_service.is_transactions_empty():
         transaction_service.add_transaction(1, 2, 150, datetime.datetime.now())
 
 init()
