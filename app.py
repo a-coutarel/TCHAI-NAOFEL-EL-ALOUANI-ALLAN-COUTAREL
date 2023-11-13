@@ -8,16 +8,21 @@ app = Flask(__name__)
 CORS(app, supports_credentials=True, origins=['*'])
 
 storage_service = StorageService()
-persons: [Person] = []
-transactions: [Transaction] = []
-tuple_persons: [tuple] = storage_service.get_persons()
-for tuple_person in tuple_persons:
-    person = Person.from_tuple(storage_service, tuple_person)
-    persons.append(person)
-if len(persons) == 0:
-    persons.append(Person(storage_service, 0, "John", "Doe", "1990-01-01"))
-    persons.append(Person(storage_service, 1, "Jane", "Doe", "1990-01-01"))
 
+def init():
+    if storage_service.is_persons_empty:
+        storage_service.add_person(Person(storage_service, 1, "John", "Doe", "1990-01-01"))
+        storage_service.add_person(Person(storage_service, 2, "Jane", "Doe", "1990-01-01"))
+    if storage_service.is_transactions_empty:
+        storage_service.add_transaction(
+            Transaction(
+                storage_service, 
+                0, 
+                Person.from_tuple(storage_service, storage_service.get_person(1)), 
+                Person.from_tuple(storage_service, storage_service.get_person(2)), 
+                50
+            )
+        )
 
 @app.route('/healthz')
 def healthz():

@@ -15,6 +15,16 @@ class StorageService:
     def add_person(self, person):
         self.cursor.execute("INSERT INTO persons(first_name, last_name, birth_date, bank_balance) VALUES (?, ?, ?, ?)", (person.first_name, person.last_name, person.birth_date, person.bank_balance))
         self.conn.commit()
+
+    def is_persons_empty(self):
+        self.cursor.execute("SELECT * FROM persons")
+        persons = self.cursor.fetchall()
+        return len(persons) == 0
+    
+    def is_transactions_empty(self):
+        self.cursor.execute("SELECT * FROM transactions")
+        transactions = self.cursor.fetchall()
+        return len(transactions) == 0
     
     def add_transaction(self, transaction):
         print(transaction.p1.id, transaction.p2.id, transaction.amount, transaction.time)
