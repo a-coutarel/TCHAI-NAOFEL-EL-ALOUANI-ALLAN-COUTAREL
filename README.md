@@ -143,3 +143,6 @@ We have opted for SQLite as a database management system because of its simplici
 Python being an interpreted language, our application will be portable and will be able to run on any platform compatible with Python.This guarantees coherent user experience, regardless of the execution environment.
 
 In summary, our choice of Python, Flask and SQLite is based on their simplicity, their speed of development, their flexibility, their exhaustive documentation and their compatibility.These technologies allow us to create a robust and functional web application that meets our requirements while offering us the possibility of demonstrating our programming and application design skills.
+
+
+## Exercise 4

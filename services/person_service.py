@@ -9,25 +9,26 @@ class PersonService:
         self.cursor = self.conn.cursor()
         self.create_tables()
     
-    def is_persons_empty(self):
-        self.cursor.execute("SELECT * FROM persons")
-        persons = self.cursor.fetchall()
-        return len(persons) == 0
+    def is_persons_empty(self) -> bool:
+        self.cursor.execute("SELECT COUNT(*) FROM persons")
+        count = self.cursor.fetchone()[0]
+        return count == 0
 
     def create_tables(self):
         self.cursor.execute("PRAGMA foreign_keys = ON")
-        self.cursor.execute("CREATE TABLE IF NOT EXISTS persons (id INTEGER PRIMARY KEY AUTOINCREMENT, first_name TEXT, last_name TEXT, birth_date TEXT, bank_balance REAL)")
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS persons (id INTEGER PRIMARY KEY AUTOINCREMENT, birth_date TEXT, first_name TEXT, last_name TEXT, bank_balance REAL)")
+        self.conn.commit()
 
     def add_person(self, first_name, last_name, birth_date, bank_balance):
         self.cursor.execute("INSERT INTO persons(first_name, last_name, birth_date, bank_balance) VALUES (?, ?, ?, ?)", (first_name, last_name, birth_date, bank_balance))
         self.conn.commit()
 
     def get_person(self, person_id) -> Person:
-        self.cursor.execute("SELECT * FROM persons WHERE id = ?", (person_id))
+        self.cursor.execute("SELECT * FROM persons WHERE id = ?", (person_id,))
         person = self.cursor.fetchone()
         return self.get_person_from_tuple(person)
     
-    def get_persons(self) -> list[Person]:
+    def get_persons(self) -> [Person]:
         self.cursor.execute("SELECT * FROM persons")
         persons = self.cursor.fetchall()
         persons = list(map(self.get_person_from_tuple, persons))
@@ -38,7 +39,7 @@ class PersonService:
         self.conn.commit()
     
     def delete_person(self, person_id):
-        self.cursor.execute("DELETE FROM persons WHERE id = ?", (person_id))
+        self.cursor.execute("DELETE FROM persons WHERE id = ?", (person_id,))
         self.conn.commit()
 
     def close(self):
