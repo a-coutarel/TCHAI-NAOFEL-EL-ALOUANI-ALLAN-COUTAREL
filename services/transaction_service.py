@@ -23,9 +23,11 @@ class TransactionService:
         self.conn.commit()
     
     def add_transaction(self, p1_id, p2_id, amount, time):
-        self.execute_transaction(p1_id, p2_id, amount)
+        if not self.execute_transaction(p1_id, p2_id, amount):
+            return False
         self.cursor.execute("INSERT INTO transactions(p1_id, p2_id, amount, time) VALUES ( ?, ?, ?, ?)", (p1_id, p2_id, amount, time))
         self.conn.commit()
+        return True
 
     def get_transaction(self, transaction_id) -> Transaction:
         self.cursor.execute("SELECT * FROM transactions WHERE id = ?", (transaction_id,))
@@ -51,10 +53,13 @@ class TransactionService:
     def execute_transaction(self, p1_id, p2_id, amount):
         p1 = person_service.get_person(p1_id)
         p2 = person_service.get_person(p2_id)
+        if p1 is None or p2 is None:
+            return False
         p1.bank_balance -= amount
         p2.bank_balance += amount
         person_service.update_person(p1)
         person_service.update_person(p2)
+        return True
 
     def delete_transaction(self, transaction_id):
         self.cursor.execute("DELETE FROM transactions WHERE id = ?", (transaction_id,))

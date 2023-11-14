@@ -26,6 +26,8 @@ class PersonService:
     def get_person(self, person_id) -> Person:
         self.cursor.execute("SELECT * FROM persons WHERE id = ?", (person_id,))
         person = self.cursor.fetchone()
+        if person is None:
+            return None
         return self.get_person_from_tuple(person)
     
     def get_persons(self) -> [Person]:
