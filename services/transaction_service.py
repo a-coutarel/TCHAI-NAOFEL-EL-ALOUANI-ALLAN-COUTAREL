@@ -46,7 +46,7 @@ class TransactionService:
         transactions = list(map(self.get_transaction_from_tuple, transactions))
         return transactions
 
-    def update_transaction(self, transaction):
+    def update_transaction(self, transaction: Transaction):
         self.cursor.execute("UPDATE transactions SET p1_id = ?, p2_id = ?, amount = ?, time = ? WHERE id = ?", (transaction.p1.id, transaction.p2.id, transaction.amount, transaction.time, transaction.id))
         self.conn.commit()
 
