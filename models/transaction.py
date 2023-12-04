@@ -13,8 +13,6 @@ class Transaction:
         
         if hash is not None:
             calculated_hash = hashlib.sha256(data).hexdigest()
-            print(hash)
-            print(calculated_hash)
             if calculated_hash == hash:
                 self.hash = hash
             else:

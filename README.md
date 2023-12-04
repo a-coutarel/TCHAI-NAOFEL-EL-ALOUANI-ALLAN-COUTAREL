@@ -176,3 +176,7 @@ No parameters required.
 | HTTP Status | Response     | Description                                                  |
 |-------------|--------------|--------------------------------------------------------------|
 | 200         | OK           | List of all transactions with the information valid or not.  |
+
+## Exercise 7
+To address this potential security vulnerability, the transactions table in the database has been updated to include a hash column. This column stores the hash of each transaction. When a transaction is retrieved, the program computes the hash of the transaction data and compares it with the stored hash in the database. If the two hashes do not match, it indicates that the transaction data has been altered manually after its creation, and the program will raise an error. This mechanism ensures the integrity of the transaction data and prevents unauthorized modifications.
+A demonstration of this mechanism can be found in the file `tests/tests.ipynb`.
