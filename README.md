@@ -146,3 +146,9 @@ In summary, our choice of Python, Flask and SQLite is based on their simplicity,
 
 
 ## Exercise 4
+After executing the following request `SELECT * FROM transactions;` on the database, we obtain the following result:
+`(1, 1, 2, 150.0, '2023-11-13 21:36:58.939091')`. It means that the transaction with the ID 1 has been created between the person with the ID 1 and the person with the ID 2, the amount of the transaction is 150.0€ and the date of the transaction is 2023-11-13 21:36:58.939091.  
+We ran the SQL request `UPDATE transactions SET amount = 100 WHERE id = 1` to change the amount of the transaction with the ID 1 to 100€.
+Now, if we execute the request `SELECT * FROM transactions;` on the database, we obtain the following result:
+`(1, 1, 2, 100.0, '2023-11-13 21:36:58.939091')`. The amount of the transaction with the ID 1 has been changed to 100€, it can be a potential security vulnerability because it is possible to change the amount of a transaction after it has been created.  
+The script can be found in the file `tests/tests.ipynb`.
