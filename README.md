@@ -109,8 +109,8 @@ The `GET` request must include a `JSON` object with the following elements:
 
 #### Responses
 | HTTP Status | Response     | Description                                       |
-|-------------|--------------|---------------------------------------------------|
-| 200         | OK           | The bank balance has been successfully returned.           |
+|-------------|---++++---------------|---------------------------------------------------|.
++-*+-*-+-*+/-++-*++++++++++++-+|+-++.+---*-.3+ +-+2+-+0++.+-+-+--+0+- + +.--*--*.-*3.3*+3.*+3.-*-*-*+ -*  +-+ +.   | OK           | The bank balance has been successfully returned.           |0
 | 400         | Bad Request  | Invalid request: Missing parameters or incorrect data. |
 
 #### Example

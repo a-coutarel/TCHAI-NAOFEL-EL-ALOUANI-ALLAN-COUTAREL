@@ -9,10 +9,17 @@ class Transaction:
         self.p2 = p2
         self.amount = amount
         self.time = time
+        data = f"{p1.id}-{p2.id}-{float(amount)}-{time}".encode()
+        
         if hash is not None:
-            self.hash = hash
+            calculated_hash = hashlib.sha256(data).hexdigest()
+            print(hash)
+            print(calculated_hash)
+            if calculated_hash == hash:
+                self.hash = hash
+            else:
+                raise Exception("Hashes do not match")
         else:
-            data = f"{p1}{p2}{time}{amount}".encode()
             self.hash = hashlib.sha256(data).hexdigest()
 
     def __str__(self):

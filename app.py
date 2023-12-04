@@ -12,11 +12,11 @@ transaction_service = TransactionService()
 
 def init():
     if person_service.is_persons_empty():
-        person_service.add_person("John", "Doe", "1990-01-01", 1500)
-        person_service.add_person("Jane", "Dupont", "1990-01-01", 780)
+        person_service.add_person("John", "Doe", "1990-01-01", 1500.0)
+        person_service.add_person("Jane", "Dupont", "1990-01-01", 780.0)
     if transaction_service.is_transactions_empty():
-        if not transaction_service.add_transaction(1, 2, 150):
-            print("Transaction failed")
+        if not transaction_service.add_transaction(1, 2, 150.0):
+            raise Exception("Transaction failed")
 
 init()
 
@@ -74,6 +74,14 @@ def person_get_bank_balance():
         abort(400, "Invalid request: Person not found")
         
     return jsonify({"bank_balance": str(person)})
+
+@app.route("/transaction/check-hash", methods=["GET"])
+def check_hash_transactions():
+    results = transaction_service.check_hash_transactions()
+    if results['count'] == 0:
+        return "All transactions are valid:\n" + results['res']
+    else: 
+        return results.count + "invalid transactions found:\n" + results['res']
 
 if __name__ == "__main__":
     app.run(debug=True)

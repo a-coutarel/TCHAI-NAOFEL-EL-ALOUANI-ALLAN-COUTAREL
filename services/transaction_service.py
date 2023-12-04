@@ -60,13 +60,30 @@ class TransactionService:
         if p1 is None or p2 is None:
             return None
         
-        transaction = Transaction(self.get_total_transactions() + 1, p1, p2, amount)
-        
         p1.bank_balance -= amount
         p2.bank_balance += amount
         person_service.update_person(p1)
         person_service.update_person(p2)
+        
+        transaction = Transaction(self.get_total_transactions() + 1, p1, p2, amount)
         return transaction
+    
+    def check_hash_transactions(self):
+        self.cursor.execute("SELECT * FROM transactions")
+        transactions = self.cursor.fetchall()
+        res = ''
+        count = 0
+        for tuple_transaction in transactions:
+            Person1 = person_service.get_person(tuple_transaction[1])
+            Person2 = person_service.get_person(tuple_transaction[2])
+            try:
+                transaction_obj = Transaction(tuple_transaction[0], Person1, Person2, tuple_transaction[3], tuple_transaction[4], tuple_transaction[5])
+                res += "Transaction ID: " + str(transaction_obj.id) + " is valid\n"
+            except Exception as e:
+                count += 1
+                res += "Error during hash verification for transaction ID: " + str(tuple_transaction[0]) + "\n"
+                res += "Error: " + str(e) + "\n"
+        return {'res' : res, 'count': count}
     
     def get_total_transactions(self) -> int:
         self.cursor.execute("SELECT COUNT(*) FROM transactions")
