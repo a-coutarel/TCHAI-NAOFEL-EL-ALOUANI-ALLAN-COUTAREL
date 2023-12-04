@@ -15,7 +15,7 @@ def init():
         person_service.add_person("John", "Doe", "1990-01-01", 1500)
         person_service.add_person("Jane", "Dupont", "1990-01-01", 780)
     if transaction_service.is_transactions_empty():
-        if not transaction_service.add_transaction(1, 2, 150, datetime.datetime.now()):
+        if not transaction_service.add_transaction(1, 2, 150):
             print("Transaction failed")
 
 init()
@@ -37,7 +37,7 @@ def transaction_save():
     if p1_id is None or p2_id is None or amount is None:
         abort(400, "Invalid request: Missing arguments")
     
-    if not transaction_service.add_transaction(p1_id, p2_id, amount, datetime.datetime.now()):
+    if not transaction_service.add_transaction(p1_id, p2_id, amount):
         abort(400, "Invalid request: Transaction failed")
     return Response(status=201)
 
