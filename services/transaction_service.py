@@ -19,13 +19,14 @@ class TransactionService:
 
     def create_tables(self):
         self.cursor.execute("PRAGMA foreign_keys = ON")
-        self.cursor.execute("CREATE TABLE IF NOT EXISTS transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, p1_id INTEGER, p2_id INTEGER, amount REAL, time TEXT, FOREIGN KEY(p1_id) REFERENCES persons(id), FOREIGN KEY(p2_id) REFERENCES persons(id))")
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, p1_id INTEGER, p2_id INTEGER, amount REAL, time TEXT, hash TEXT, FOREIGN KEY(p1_id) REFERENCES persons(id), FOREIGN KEY(p2_id) REFERENCES persons(id))")
         self.conn.commit()
     
-    def add_transaction(self, p1_id, p2_id, amount, time):
-        if not self.execute_transaction(p1_id, p2_id, amount):
+    def add_transaction(self, p1_id, p2_id, amount):
+        transaction = self.execute_transaction(p1_id, p2_id, amount)
+        if transaction is None:
             return False
-        self.cursor.execute("INSERT INTO transactions(p1_id, p2_id, amount, time) VALUES ( ?, ?, ?, ?)", (p1_id, p2_id, amount, time))
+        self.cursor.execute("INSERT INTO transactions(p1_id, p2_id, amount, time, hash) VALUES ( ?, ?, ?, ?, ?)", (p1_id, p2_id, amount, transaction.time, transaction.hash))
         self.conn.commit()
         return True
 
@@ -47,19 +48,28 @@ class TransactionService:
         return transactions
 
     def update_transaction(self, transaction):
-        self.cursor.execute("UPDATE transactions SET p1_id = ?, p2_id = ?, amount = ?, time = ? WHERE id = ?", (transaction.p1.id, transaction.p2.id, transaction.amount, transaction.time, transaction.id))
+        self.cursor.execute("UPDATE transactions SET p1_id = ?, p2_id = ?, amount = ?, time = ?, hash = ? WHERE id = ?", (transaction.p1.id, transaction.p2.id, transaction.amount, transaction.time, transaction.hash, transaction.id))
         self.conn.commit()
 
     def execute_transaction(self, p1_id, p2_id, amount):
         p1 = person_service.get_person(p1_id)
         p2 = person_service.get_person(p2_id)
+        
         if p1 is None or p2 is None:
-            return False
+            return None
+        
+        transaction = Transaction(self.get_total_transactions() + 1, p1, p2, amount)
+        
         p1.bank_balance -= amount
         p2.bank_balance += amount
         person_service.update_person(p1)
         person_service.update_person(p2)
-        return True
+        return transaction
+    
+    def get_total_transactions(self) -> int:
+        self.cursor.execute("SELECT COUNT(*) FROM transactions")
+        count = self.cursor.fetchone()[0]
+        return count
 
     def delete_transaction(self, transaction_id):
         self.cursor.execute("DELETE FROM transactions WHERE id = ?", (transaction_id,))
@@ -76,4 +86,4 @@ class TransactionService:
     def get_transaction_from_tuple(self, tuple):
         Person1 = person_service.get_person(tuple[1])
         Person2 = person_service.get_person(tuple[2])
-        return Transaction(tuple[0], Person1, Person2, tuple[3], tuple[4])
+        return Transaction(tuple[0], Person1, Person2, tuple[3], tuple[4], tuple[5])
