@@ -32,6 +32,7 @@ export FLASK_APP=app.py
 - Launch the application:  
 `flask run`
 
+# Tchaî v1
 ## Exercise 3
 ### A1: Save a transaction
 To create a transaction, you have to send a `POST` request to the route `localhost:5000/transaction/create`.
@@ -154,3 +155,24 @@ Now, if we execute the request `SELECT * FROM transactions;` on the database, we
 `(1, 1, 2, 100.0, '2023-11-13 21:36:58.939091')`.  
 The amount of the transaction with the ID 1 has been changed to 100€, it can be a potential security vulnerability because it is possible to change the amount of a transaction after it has been created.  
 The script can be found in the file `tests/tests.ipynb`.
+
+# Tchaî v2
+
+The hash function used in the code is SHA-256. This hash function is employed to generate a hash token for each transaction carried out.
+
+SHA-256 is a cryptographic hash function that takes input of any size and converts it into a fixed output of 256 bits. This means that once an input is hashed using SHA-256, it will consistently produce the same 256-bit output, regardless of the original input size. Furthermore, the hash function is a one-way operation, implying that it is highly challenging, if not impossible, to deduce the original input from the hash output.
+
+In this code, the hash function is utilized to create a hash token for every transaction performed. Transaction data is converted into a string (str(transaction_data)), then encoded into bytes (encode()). The sha256() function from the hashlib library is employed to create the hash token. Finally, the hexdigest() function is used to return the hash token as a hexadecimal string.
+
+The choice of SHA-256 is a sound one as it is considered secure and widely used in security applications for reliably generating hash tokens.
+
+## Exercise 6
+To know if the transactions are valid, you have to send a `GET` request to the route `localhost:5000/transaction/check-hash`.
+#### Request Parameters
+
+No parameters required.
+
+#### Responses
+| HTTP Status | Response     | Description                                                  |
+|-------------|--------------|--------------------------------------------------------------|
+| 200         | OK           | List of all transactions with the information valid or not.  |
