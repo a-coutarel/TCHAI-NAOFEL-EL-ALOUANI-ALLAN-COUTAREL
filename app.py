@@ -81,7 +81,7 @@ def check_hash_transactions():
     if results['count'] == 0:
         return "All transactions are valid:\n" + results['res']
     else: 
-        return results.count + "invalid transactions found:\n" + results['res']
+        return str(results['count']) + " invalid transactions found:\n" + results['res']
 
 if __name__ == "__main__":
     app.run(debug=True)

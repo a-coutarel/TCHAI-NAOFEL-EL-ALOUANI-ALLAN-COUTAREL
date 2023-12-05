@@ -65,7 +65,8 @@ class TransactionService:
         person_service.update_person(p1)
         person_service.update_person(p2)
         
-        transaction = Transaction(self.get_total_transactions() + 1, p1, p2, amount)
+        previous_hash = self.get_previous_hash()
+        transaction = Transaction(self.get_total_transactions() + 1, p1, p2, amount, previous_hash=previous_hash)
         return transaction
     
     def check_hash_transactions(self):
@@ -77,13 +78,26 @@ class TransactionService:
             Person1 = person_service.get_person(tuple_transaction[1])
             Person2 = person_service.get_person(tuple_transaction[2])
             try:
-                transaction_obj = Transaction(tuple_transaction[0], Person1, Person2, tuple_transaction[3], tuple_transaction[4], tuple_transaction[5])
+                previous_hash = self.get_previous_hash(tuple_transaction[0])
+                transaction_obj = Transaction(tuple_transaction[0], Person1, Person2, tuple_transaction[3], tuple_transaction[4], tuple_transaction[5], previous_hash)
                 res += "Transaction ID: " + str(transaction_obj.id) + " is valid\n"
             except Exception as e:
                 count += 1
-                res += "Error during hash verification for transaction ID: " + str(tuple_transaction[0]) + "\n"
-                res += "Error: " + str(e) + "\n"
+                res += "Transaction ID: " + str(tuple_transaction[0]) + " is invalid. Error during hash verification.\n"
         return {'res' : res, 'count': count}
+    
+    def get_previous_hash(self, id = None):
+        if self.get_total_transactions() == 0 or id == 1:
+            return ""
+        
+        if id is None:
+            self.cursor.execute("SELECT hash FROM transactions ORDER BY id DESC LIMIT 1")
+            hash = self.cursor.fetchone()[0]
+            return hash
+        else:
+            self.cursor.execute("SELECT hash FROM transactions WHERE id = ?", (id - 1,))
+            hash = self.cursor.fetchone()[0]
+            return hash
     
     def get_total_transactions(self) -> int:
         self.cursor.execute("SELECT COUNT(*) FROM transactions")
@@ -105,4 +119,5 @@ class TransactionService:
     def get_transaction_from_tuple(self, tuple):
         Person1 = person_service.get_person(tuple[1])
         Person2 = person_service.get_person(tuple[2])
-        return Transaction(tuple[0], Person1, Person2, tuple[3], tuple[4], tuple[5])
+        previous_hash = self.get_previous_hash(tuple[0])
+        return Transaction(tuple[0], Person1, Person2, tuple[3], tuple[4], tuple[5], previous_hash)
