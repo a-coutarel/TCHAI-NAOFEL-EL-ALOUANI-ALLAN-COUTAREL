@@ -23,6 +23,8 @@
 `git clone https://github.com/a-coutarel/TCHAI-NAOFEL-EL-ALOUANI-ALLAN-COUTAREL.git`
 - Enter in the repository:  
 `cd TCHAI-NAOFEL-EL-ALOUANI-ALLAN-COUTAREL`
+- Install PyCryptodome:
+`pip install pycryptodome`
 - Install Flask:  
 `pip install flask`
 - Export the environment variable (first place yourself in the project folder):
@@ -264,13 +266,13 @@ Exercise 10 introduces a critical enhancement to address potential security vuln
 A demonstration of this mechanism can be found in the file `tests/tests.ipynb`.
 
 ## Exercise 11
-In Exercise 11, the objective is to assess the system's susceptibility to an attack involving the initiation of a transaction from an existing account to that of the attacker. The script provided for this exercise attempts to execute such a transaction, specifying an existing person (ID: 2) and targeting the account of the attacker (ID: 1). The anticipated outcome is that the transaction should fail, either due to insufficient funds in the source account or as a result of the system detecting an unauthorized transaction. This exercise serves as a crucial test to evaluate the system's robustness in preventing potentially malicious transactions that could compromise the security and integrity of financial data. By simulating such attack scenarios, the system's ability to thwart unauthorized transactions is thoroughly examined, ensuring the reliability of its security measures in safeguarding sensitive transactional information.
-The script for line addition can be found in the file `tests/tests.ipynb`.
-
+In Exercise 11, the objective is to assess the system's susceptibility to an attack involving the initiation of a transaction from an existing account to that of the attacker. The script provided for this exercise attempts to execute such a transaction, specifying an existing person (ID: 2) and targeting the account of the attacker (ID: 1). The anticipated outcome is that the transaction should fail as a result of the system detecting an unauthorized transaction. This exercise serves as a crucial test to evaluate the system's robustness in preventing potentially malicious transactions that could compromise the security and integrity of financial data.
+A demonstration of this mechanism can be found in the file `tests/tests.ipynb`.
 
 ## Exercice 13
 The use of the asymmetric cryptography algorithm RSA in our API now allows the secure signing of banking transactions, guaranteeing user authenticity and transaction integrity.  
 When a user sets up an account, he receives a private key, which is not stored on the server, ensuring their exclusive ownership. Only the public key is stored in the user table of the database.  
+A demonstration of this mechanism can be found in the file `tests/tests.ipynb`.
 
 ### Route: `/register`
 
