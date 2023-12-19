@@ -23,7 +23,7 @@
 `git clone https://github.com/a-coutarel/TCHAI-NAOFEL-EL-ALOUANI-ALLAN-COUTAREL.git`
 - Enter in the repository:  
 `cd TCHAI-NAOFEL-EL-ALOUANI-ALLAN-COUTAREL`
-- Install PyCryptodome:
+- Install PyCryptodome:  
 `pip install pycryptodome`
 - Install Flask:  
 `pip install flask`
