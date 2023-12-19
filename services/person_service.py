@@ -1,6 +1,7 @@
 import sqlite3
 
 from models.person import Person
+from services.crypto_service import CryptoService
 
 class PersonService: 
     def __init__(self, db_path = "./database/db.sqlite"):
@@ -19,10 +20,11 @@ class PersonService:
         self.cursor.execute("CREATE TABLE IF NOT EXISTS persons (id INTEGER PRIMARY KEY AUTOINCREMENT, birth_date TEXT, first_name TEXT, last_name TEXT, bank_balance REAL, public_key TEXT)")
         self.conn.commit()
 
-    def add_person(self, first_name, last_name, birth_date, bank_balance, public_key) -> Person:
+    def add_person(self, first_name, last_name, birth_date, bank_balance) -> (Person, str):
+        private_key, public_key = CryptoService.generate_keys()
         self.cursor.execute("INSERT INTO persons(first_name, last_name, birth_date, bank_balance, public_key) VALUES (?, ?, ?, ?, ?)", (first_name, last_name, birth_date, bank_balance, public_key))
         self.conn.commit()
-        return self.get_person(self.cursor.lastrowid)
+        return self.get_person(self.cursor.lastrowid), private_key
 
     def get_person(self, person_id) -> Person:
         self.cursor.execute("SELECT * FROM persons WHERE id = ?", (person_id,))

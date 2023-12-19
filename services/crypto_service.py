@@ -25,8 +25,7 @@ class CryptoService:
         digest = SHA512.new()
         digest.update(transaction_data.encode())
         signature = signer.sign(digest)
-        #return base64.b64encode(signature).decode()
-        return signature
+        return base64.b64encode(signature).decode()
 
     def verify_signature(public_key: str, transaction_data: str, signature: str) -> bool:
         try:

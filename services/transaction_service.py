@@ -1,6 +1,7 @@
 import sqlite3
 
 from models.transaction import Transaction
+from services.crypto_service import CryptoService
 from services.person_service import PersonService
 
 person_service = PersonService()
@@ -22,13 +23,28 @@ class TransactionService:
         self.cursor.execute("CREATE TABLE IF NOT EXISTS transactions (id INTEGER PRIMARY KEY AUTOINCREMENT, p1_id INTEGER, p2_id INTEGER, amount REAL, time TEXT, hash TEXT, FOREIGN KEY(p1_id) REFERENCES persons(id), FOREIGN KEY(p2_id) REFERENCES persons(id))")
         self.conn.commit()
     
-    def add_transaction(self, p1_id, p2_id, amount):
-        transaction = self.execute_transaction(p1_id, p2_id, amount)
-        if transaction is None:
+    def add_transaction(self, transaction_data: dict, signature: str) -> bool:
+        p1 = person_service.get_person(transaction_data.get("p1_id"))
+        p2 = person_service.get_person(transaction_data.get("p2_id"))
+        public_key = p1.public_key
+
+        if public_key is None:
+            print("Invalid request: Public key not found for this user")
             return False
-        self.cursor.execute("INSERT INTO transactions(p1_id, p2_id, amount, time, hash) VALUES ( ?, ?, ?, ?, ?)", (p1_id, p2_id, amount, transaction.time, transaction.hash))
+        
+        if not CryptoService.verify_signature(public_key, str(transaction_data), signature):
+            print("Invalid request: Invalid signature")
+            return False
+
+        previous_hash = self.get_previous_hash()
+        transaction = Transaction(0, p1, p2, transaction_data.get("amount"), previous_hash=previous_hash)
+        
+        self.cursor.execute("INSERT INTO transactions(p1_id, p2_id, amount, time, hash) VALUES ( ?, ?, ?, ?, ?)", (p1.id, p2.id, transaction.amount, transaction.time, transaction.hash))
         self.conn.commit()
         return True
+    
+    def sign_transaction(self, private_key, transaction_data) -> str:
+        return CryptoService.sign_transaction(private_key, str(transaction_data))
 
     def get_transaction(self, transaction_id) -> Transaction:
         self.cursor.execute("SELECT * FROM transactions WHERE id = ?", (transaction_id,))
