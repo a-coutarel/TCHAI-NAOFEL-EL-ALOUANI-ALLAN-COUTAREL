@@ -32,6 +32,81 @@ export FLASK_APP=app.py
 - Launch the application:  
 `flask run`
 
+## Final routes
+This parts details the format of the arguments for each route. The routes have been modified to include the new functionalities introduced during the project.  
+
+### Route: `/healthz`
+
+| Parameter   | Type   | Description                          |
+|------------ |--------|--------------------------------------|
+| None        |        | No required parameters.              |
+
+### Route: `/register`
+
+| Parameter      | Type   | Description                                                |
+|--------------- |--------|------------------------------------------------------------|
+| `firstname`    | String | The first name of the user to be registered.               |
+| `lastname`     | String | The last name of the user to be registered.                |
+| `birthdate`    | String | The birthdate of the user to be registered.                |
+| `bank_balance` | Float  | The initial bank balance of the user to be registered.    |
+
+### Route: `/transaction/create`
+
+| Parameter     | Type   | Description                                   |
+|-------------- |--------|-----------------------------------------------|
+| `private_key` | String | The private key for signing the transaction. |
+| `transaction` |  JSON  | The transaction to be signed.  
+
+The transaction JSON object has the following format:
+```json
+"private_key": "",
+"transaction": {
+    "p1_id": 0,
+    "p2_id": 0,
+    "amount": 0
+  }
+``` 
+
+### Route: `/transaction/sign`
+
+| Parameter     | Type   | Description                                   |
+|-------------- |--------|-----------------------------------------------|
+| `private_key` | String | The private key for signing the transaction. |
+| `transaction` | JSON | The transaction to be signed.                |  
+
+The transaction JSON object has the following format:
+```json
+"transaction": {
+    "p1_id": 0,
+    "p2_id": 0,
+    "amount": 0
+  }
+```
+
+### Route: `/transaction/view-in-chronological-order`
+
+| Parameter  | Type   | Description                          |
+|------------|--------|--------------------------------------|
+| None       |        | No required parameters.              |
+
+### Route: `/transaction/view-by-person`
+
+| Parameter   | Type    | Description                                         |
+|------------ |---------|-----------------------------------------------------|
+| `person_id` | Integer | The ID of the person whose transactions to display. |
+
+### Route: `/transaction/check-hash`
+
+| Parameter  | Type   | Description                          |
+|------------|--------|--------------------------------------|
+| None       |        | No required parameters.              |
+
+### Route: `/person/bank-balance`
+
+| Parameter   | Type    | Description                                  |
+|------------ |---------|----------------------------------------------|
+| `person_id` | Integer | The ID of the person whose bank balance to retrieve. |
+
 # Tchaî v1
 ## Exercise 3
 ### A1: Save a transaction
@@ -109,9 +184,9 @@ The `GET` request must include a `JSON` object with the following elements:
 | `person_id`    | Integer  | The ID of the person given. |
 
 #### Responses
-| HTTP Status | Response     | Description                                       |
-|-------------|---++++---------------|---------------------------------------------------|.
-+-*+-*-+-*+/-++-*++++++++++++-+|+-++.+---*-.3+ +-+2+-+0++.+-+-+--+0+- + +.--*--*.-*3.3*+3.*+3.-*-*-*+ -*  +-+ +.   | OK           | The bank balance has been successfully returned.           |0
+| HTTP Status | Response | Description |
+|-------------|------------------|-------------------------------------------------|  
+| OK           | The bank balance has been successfully returned.           |0
 | 400         | Bad Request  | Invalid request: Missing parameters or incorrect data. |
 
 #### Example
@@ -120,7 +195,6 @@ The `GET` request must include a `JSON` object with the following elements:
     "person_id": 0
 }
 ```
-
 
 ## Choice of technologies
 For this project, we have chosen to use Python as main programming language, the Flask web framework and the SQLite database management system.Our choices are motivated by several considerations:
@@ -192,3 +266,71 @@ A demonstration of this mechanism can be found in the file `tests/tests.ipynb`.
 ## Exercise 11
 In Exercise 11, the objective is to assess the system's susceptibility to an attack involving the initiation of a transaction from an existing account to that of the attacker. The script provided for this exercise attempts to execute such a transaction, specifying an existing person (ID: 2) and targeting the account of the attacker (ID: 1). The anticipated outcome is that the transaction should fail, either due to insufficient funds in the source account or as a result of the system detecting an unauthorized transaction. This exercise serves as a crucial test to evaluate the system's robustness in preventing potentially malicious transactions that could compromise the security and integrity of financial data. By simulating such attack scenarios, the system's ability to thwart unauthorized transactions is thoroughly examined, ensuring the reliability of its security measures in safeguarding sensitive transactional information.
 The script for line addition can be found in the file `tests/tests.ipynb`.
+
+
+## Exercice 13
+The use of the asymmetric cryptography algorithm RSA in our API now allows the secure signing of banking transactions, guaranteeing user authenticity and transaction integrity.  
+When a user sets up an account, he receives a private key, which is not stored on the server, ensuring their exclusive ownership. Only the public key is stored in the user table of the database.  
+
+### Route: `/register`
+
+#### Parameters
+| Parameter      | Type   | Description                                                |
+|--------------- |--------|------------------------------------------------------------|
+| `firstname`    | String | The first name of the user to be registered.               |
+| `lastname`     | String | The last name of the user to be registered.                |
+| `birthdate`    | String | The birthdate of the user to be registered.                |
+| `bank_balance` | Float  | The initial bank balance of the user to be registered.    |
+
+#### Responses
+| HTTP Status | Response          | Description                                     |
+|-------------|-------------------|-------------------------------------------------|
+| 201         | User registered   | The user has been successfully registered, returning the private key and user ID. |
+| 400         | Bad Request       | Invalid request: Missing parameters or incorrect data.   |  
+
+Additionally, we have established a route for users lacking the means to sign messages. The route `/transaction/sign` takes a private key and a transaction as arguments.
+
+### Route: `/transaction/sign`
+#### Parameters
+| Parameter     | Type   | Description                                   |
+|-------------- |--------|-----------------------------------------------|
+| `private_key` | String | The private key for signing the transaction. |
+| `transaction` | JSON | The transaction to be signed.  
+
+The transaction JSON object has the following format:
+```json
+"private_key": "",
+"transaction": {
+    "p1_id": 0,
+    "p2_id": 0,
+    "amount": 0
+  }
+```
+#### Responses
+This route returns the signature in a JSON object:
+```json
+"signature": ""
+```
+| HTTP Status | Response         | Description                                     |
+|-------------|------------------|-------------------------------------------------|
+| 201         | Signature successful | The digital signature of the transaction has been successfully generated. |
+| 400         | Bad Request      | Invalid request: Missing parameters or incorrect private key. |
+
+Once the user obtains his signature, he submits transaction and its signature via the designated route. The `/transaction/create` route accepts a `JSON` object with a transaction (also in JSON format) and a matching signature.
+### Route: `/transaction/create`
+
+| Parameter   | Type    | Description                                           |
+|------------ |---------|-------------------------------------------------------|
+| `transaction` | JSON  | The transaction object containing transaction  
+| `signature`   | String | The signature of the given transaction  
+
+The transaction object contains the following properties:
+```json
+"transaction": {
+    "p1_id": 0,
+    "p2_id": 0,
+    "amount": 0
+  }
+```
+The server then verifies the transaction's signature using the user's public key, previously recorded in our database.
+If the signature is invalid, a 400 code is returned.

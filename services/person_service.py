@@ -16,12 +16,13 @@ class PersonService:
 
     def create_tables(self):
         self.cursor.execute("PRAGMA foreign_keys = ON")
-        self.cursor.execute("CREATE TABLE IF NOT EXISTS persons (id INTEGER PRIMARY KEY AUTOINCREMENT, birth_date TEXT, first_name TEXT, last_name TEXT, bank_balance REAL)")
+        self.cursor.execute("CREATE TABLE IF NOT EXISTS persons (id INTEGER PRIMARY KEY AUTOINCREMENT, birth_date TEXT, first_name TEXT, last_name TEXT, bank_balance REAL, public_key TEXT)")
         self.conn.commit()
 
-    def add_person(self, first_name, last_name, birth_date, bank_balance):
-        self.cursor.execute("INSERT INTO persons(first_name, last_name, birth_date, bank_balance) VALUES (?, ?, ?, ?)", (first_name, last_name, birth_date, bank_balance))
+    def add_person(self, first_name, last_name, birth_date, bank_balance, public_key) -> Person:
+        self.cursor.execute("INSERT INTO persons(first_name, last_name, birth_date, bank_balance, public_key) VALUES (?, ?, ?, ?, ?)", (first_name, last_name, birth_date, bank_balance, public_key))
         self.conn.commit()
+        return self.get_person(self.cursor.lastrowid)
 
     def get_person(self, person_id) -> Person:
         self.cursor.execute("SELECT * FROM persons WHERE id = ?", (person_id,))
@@ -53,4 +54,4 @@ class PersonService:
         self.conn.commit()
     
     def get_person_from_tuple(self, tuple) -> Person:
-        return Person(tuple[0], tuple[1], tuple[2], tuple[3], tuple[4])
+        return Person(tuple[0], tuple[1], tuple[2], tuple[3], tuple[4], tuple[5])
