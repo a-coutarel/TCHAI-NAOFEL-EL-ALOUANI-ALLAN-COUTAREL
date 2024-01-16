@@ -54,12 +54,12 @@ This parts details the format of the arguments for each route. The routes have b
 
 | Parameter     | Type   | Description                                   |
 |-------------- |--------|-----------------------------------------------|
-| `private_key` | String | The private key for signing the transaction. |
-| `transaction` |  JSON  | The transaction to be signed.  
+| `signature` | String | The signature for the transaction. |
+| `transaction` |  JSON  | The transaction.              |
 
 The transaction JSON object has the following format:
 ```json
-"private_key": "",
+"signature": "",
 "transaction": {
     "p1_id": 0,
     "p2_id": 0,
